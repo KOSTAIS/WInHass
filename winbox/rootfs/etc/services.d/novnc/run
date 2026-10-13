@@ -1,0 +1,13 @@
+#!/usr/bin/with-contenv bashio
+# Serve the noVNC client and proxy its websocket to the VNC server.
+#
+# With host networking, Supervisor reaches ingress through the hassio bridge
+# gateway (172.30.32.1). Bind only there so the unauthenticated VNC session
+# is not exposed to the rest of the LAN.
+LISTEN="172.30.32.1"
+if ! ip -4 addr show | grep -q "inet ${LISTEN}/"; then
+    bashio::log.warning "Bridge address ${LISTEN} not found, listening on all interfaces"
+    LISTEN="0.0.0.0"
+fi
+bashio::log.info "Starting noVNC on ${LISTEN}:8799"
+exec websockify --web /usr/share/novnc "${LISTEN}:8799" 127.0.0.1:5901

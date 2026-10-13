@@ -1,0 +1,51 @@
+#!/usr/bin/with-contenv bashio
+# Download (once, cached in /data) and run the native Linux WinBox build.
+set -e
+
+VERSION="$(bashio::config 'winbox_version')"
+URL="$(bashio::config 'winbox_url')"
+if bashio::var.is_empty "${URL}" || [[ "${URL}" == "null" ]]; then
+    URL="https://download.mikrotik.com/routeros/winbox/${VERSION}/WinBox_Linux.zip"
+fi
+
+INSTALL_DIR="/data/winbox/${VERSION}"
+BINARY="${INSTALL_DIR}/WinBox"
+
+if [ ! -x "${BINARY}" ]; then
+    bashio::log.info "Downloading WinBox ${VERSION} from ${URL}"
+    rm -rf "${INSTALL_DIR}"
+    mkdir -p "${INSTALL_DIR}"
+    if ! curl -fsSL -o /tmp/winbox.zip "${URL}"; then
+        bashio::log.error "Download failed. Check 'winbox_version' or set 'winbox_url' to the WinBox_Linux.zip link from https://mikrotik.com/download"
+        rm -rf "${INSTALL_DIR}"
+        sleep 60
+        exit 1
+    fi
+    unzip -q -o /tmp/winbox.zip -d "${INSTALL_DIR}"
+    rm -f /tmp/winbox.zip
+    # The zip layout has changed between releases; locate the executable.
+    if [ ! -f "${BINARY}" ]; then
+        FOUND="$(find "${INSTALL_DIR}" -type f -iname 'winbox*' ! -name '*.*' | head -n 1)"
+        [ -n "${FOUND}" ] && ln -sf "${FOUND}" "${BINARY}"
+    fi
+    chmod +x "${BINARY}" || true
+fi
+
+if [ ! -x "${BINARY}" ]; then
+    bashio::log.error "WinBox executable not found in ${INSTALL_DIR}"
+    rm -rf "${INSTALL_DIR}"
+    sleep 60
+    exit 1
+fi
+
+# Keep WinBox settings, saved sessions and address list across restarts.
+export HOME=/data/home
+mkdir -p "${HOME}"
+export DISPLAY=:1
+export QT_QPA_PLATFORM=xcb
+export LIBGL_ALWAYS_SOFTWARE=1
+
+until [ -e /tmp/.X11-unix/X1 ]; do sleep 0.5; done
+
+bashio::log.info "Starting WinBox ${VERSION}"
+exec "${BINARY}"

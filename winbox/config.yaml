@@ -1,0 +1,25 @@
+name: MikroTik WinBox
+version: "1.0.0"
+slug: winbox
+description: MikroTik WinBox 4 in your Home Assistant sidebar
+url: https://github.com/KOSTAIS/WInHass/tree/main/winbox
+arch:
+  - amd64
+init: false
+startup: application
+boot: auto
+ingress: true
+ingress_port: 8799
+panel_icon: mdi:router-network
+panel_title: WinBox
+# Host networking lets WinBox discover routers on the LAN (MNDP neighbours)
+# and connect by MAC address, just like on a desktop.
+host_network: true
+options:
+  winbox_version: "4.0"
+  winbox_url: ""
+  resolution: "1600x900"
+schema:
+  winbox_version: str
+  winbox_url: str?
+  resolution: match(^\d{3,4}x\d{3,4}$)

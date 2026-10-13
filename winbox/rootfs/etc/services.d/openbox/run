@@ -1,0 +1,4 @@
+#!/usr/bin/with-contenv bashio
+export DISPLAY=:1
+until [ -e /tmp/.X11-unix/X1 ]; do sleep 0.5; done
+exec openbox

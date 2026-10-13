@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WinBox</title>
+  <script>
+    // Ingress serves us under /api/hassio_ingress/<token>/, so the websocket
+    // path has to be built from the current location rather than "/websockify".
+    var base = window.location.pathname.replace(/[^/]*$/, "");
+    var params = new URLSearchParams({
+      autoconnect: "true",
+      reconnect: "true",
+      reconnect_delay: "2000",
+      resize: "remote",
+      show_dot: "true",
+      path: base.replace(/^\//, "") + "websockify"
+    });
+    window.location.replace(base + "vnc.html?" + params.toString());
+  </script>
+</head>
+<body></body>
+</html>

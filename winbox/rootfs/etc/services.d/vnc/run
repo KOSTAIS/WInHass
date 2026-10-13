@@ -1,0 +1,14 @@
+#!/usr/bin/with-contenv bashio
+# Virtual X display + VNC server, only reachable from inside the add-on.
+RESOLUTION="$(bashio::config 'resolution')"
+bashio::log.info "Starting virtual display (${RESOLUTION})"
+rm -f /tmp/.X1-lock /tmp/.X11-unix/X1
+exec Xtigervnc :1 \
+    -geometry "${RESOLUTION}" \
+    -depth 24 \
+    -interface 127.0.0.1 \
+    -rfbport 5901 \
+    -SecurityTypes None \
+    -AlwaysShared \
+    -AcceptSetDesktopSize \
+    -desktop WinBox

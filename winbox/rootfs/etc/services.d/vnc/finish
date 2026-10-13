@@ -1,0 +1,5 @@
+#!/usr/bin/env bashio
+# Restart the service if it exits; stop the add-on only on a signal.
+if [[ "${1}" -ne 0 ]] && [[ "${1}" -ne 256 ]]; then
+    bashio::log.warning "Service exited with code ${1}, restarting"
+fi
