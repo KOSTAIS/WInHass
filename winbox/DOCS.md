@@ -19,7 +19,7 @@ Open it from the **WinBox** entry in the sidebar.
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `winbox_version` | `4.0` | WinBox version to download. Use a folder name from `https://download.mikrotik.com/routeros/winbox/`. Change it to upgrade. |
+| `winbox_version` | `4.4` | WinBox version to download. Use a folder name from `https://download.mikrotik.com/routeros/winbox/`. Change it to upgrade. |
 | `winbox_url` | *(empty)* | Optional direct link to a `WinBox_Linux.zip`. Overrides `winbox_version`. |
 | `resolution` | `1600x900` | Starting size of the virtual screen. |
 
