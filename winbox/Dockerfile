@@ -35,4 +35,6 @@ RUN apt-get update \
 
 COPY rootfs /
 
-RUN chmod a+x /etc/services.d/*/run /etc/services.d/*/finish /usr/bin/winbox-launch
+RUN chmod a+x /etc/services.d/*/run /etc/services.d/*/finish /usr/bin/winbox-launch \
+    && sed -i 's|</head>|    <script type="module" src="winbox-fit.js"></script>\n</head>|' /usr/share/novnc/vnc.html \
+    && grep -q 'winbox-fit.js' /usr/share/novnc/vnc.html

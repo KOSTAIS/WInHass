@@ -9,5 +9,10 @@ if ! ip -4 addr show | grep -q "inet ${LISTEN}/"; then
     bashio::log.warning "Bridge address ${LISTEN} not found, listening on all interfaces"
     LISTEN="0.0.0.0"
 fi
+# Settings read by winbox-fit.js in the browser.
+printf '{"min_width": %d, "min_height": %d}\n' \
+    "$(bashio::config 'min_width')" "$(bashio::config 'min_height')" \
+    > /usr/share/novnc/winbox-config.json
+
 bashio::log.info "Starting noVNC on ${LISTEN}:8799"
 exec websockify --web /usr/share/novnc "${LISTEN}:8799" 127.0.0.1:5901
